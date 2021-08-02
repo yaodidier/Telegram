@@ -4126,12 +4126,17 @@ public class ChatActivityEnterView extends FrameLayout implements NotificationCe
                     delegate.onMessageSend(message, notify, scheduleDate);
                 }
             } else {
+                // todo QQ
+                // 这里注释之后，就没有偏移上去的动画了，因为moveToSendStateRunnable为空
+                // moveToSendStateRunnable为空，不能触发ChatListItemAnimator的绘制判断
                 messageTransitionIsRunning = false;
                 AndroidUtilities.runOnUIThread(moveToSendStateRunnable = () -> {
                     moveToSendStateRunnable = null;
                     hideTopView(true);
                     messageEditText.setText("");
                     if (delegate != null) {
+                        // todo QQ
+                        // 此处注释了，对动画没有影响
                         delegate.onMessageSend(message, notify, scheduleDate);
                     }
                 }, 200);
@@ -4965,6 +4970,8 @@ public class ChatActivityEnterView extends FrameLayout implements NotificationCe
         if (moveToSendStateRunnable != null) {
             AndroidUtilities.cancelRunOnUIThread(moveToSendStateRunnable);
             messageTransitionIsRunning = true;
+            // todo QQ
+            // run本身没有影响，和漂移动作无关
             moveToSendStateRunnable.run();
             moveToSendStateRunnable = null;
         }

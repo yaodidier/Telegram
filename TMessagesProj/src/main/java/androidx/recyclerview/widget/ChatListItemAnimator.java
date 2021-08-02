@@ -288,6 +288,8 @@ public class ChatListItemAnimator extends DefaultItemAnimator {
         if (!(chatMessageCell != null && chatMessageCell.getTransitionParams().ignoreAlpha)) {
             holder.itemView.setAlpha(1);
         }
+        // todo QQ
+        // 此处注释 文字的偏移动画没有了，但是list的动画还有，emoji的放大偏移动画还有
         if (chatMessageCell != null && activity.animatingMessageObjects.contains(chatMessageCell.getMessageObject())) {
             activity.animatingMessageObjects.remove(chatMessageCell.getMessageObject());
             if (activity.getChatActivityEnterView().canShowMessageTransition()) {
@@ -299,12 +301,17 @@ public class ChatListItemAnimator extends DefaultItemAnimator {
                 } else {
                     if (SharedConfig.getDevicePerformanceClass() != SharedConfig.PERFORMANCE_CLASS_LOW && Math.abs(view.getTranslationY()) < recyclerListView.getMeasuredHeight()) {
                         TextMessageEnterTransition transition = new TextMessageEnterTransition(chatMessageCell, activity, recyclerListView, activity.messageEnterTransitionContainer);
+                        // 此处注释掉，不start的话，会预留空行，但是没有内容
                         transition.start();
                     }
                 }
                 activity.getChatActivityEnterView().startMessageTransition();
             }
         }
+        // todo QQ
+        // 此处的作用是，制造一个向上的动画
+        // 因为TextMessageEnterTransition到达会消失
+        // 但是本身recyclerview又还没有刷新(猜测)，因此如果不执行，会空白一段时间
         animation.translationY(0).setDuration(getMoveDuration())
                 .setInterpolator(translationInterpolator)
                 .setListener(new AnimatorListenerAdapter() {
